@@ -1,0 +1,22 @@
+/* PANEL: Google Analytics */
+
+.google_analytics h4 {
+	margin: 0 0 5px 0;
+}
+
+.google_analytics dl {
+	margin: 0 0 10px 0;
+	overflow: hidden;
+}
+
+.google_analytics  dt {
+	float: left;
+	clear: left;
+	width: 25%;
+}
+
+.google_analytics  dd {
+	float: left;
+	width: 70%;
+}
+
