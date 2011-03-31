@@ -477,7 +477,8 @@ class GoogleChart {
 	 * @param integer $v_off px
 	 * @param string $reserved must be empty
 	 */
-	function AddShapeMarker( $type, $color, $index, $size, $at = false, $point = '', $z_order = '', $h_off = '', $v_off = '', $reserved = '') {
+	 	 
+	function AddShapeMarker( $type, $color, $index, $point, $size, $z_order = '', $h_off = '', $v_off = '', $reserved = '') {
 		
 		$temp = '';
 

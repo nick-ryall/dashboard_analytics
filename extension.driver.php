@@ -106,34 +106,101 @@
 			    
 			    $wrapper = new XMLElement('div');
 			    $wrapper->setAttribute('class', 'google_analytics');
+			    
+			    $graph = extension_dashboard_analytics::buildChart($oAnalytics);
+				$wrapper->appendChild($graph);
+				
+			    
+			    $info = new XMLElement('div');
+			    $info->setAttribute('class', 'info');
+			    $info_header = new XMLElement('h4', 'Quick Information');
 			    $dl_results = new XMLElement('dl');
 			    
-			    
 			    //Total Pageviews
-			    $dt_pageviews = new XMLElement('dt', 'Total Pageviews');
+			    $dt_pageviews = new XMLElement('dt', 'Pageviews:');
 			    $dd_pageviews = new XMLElement('dd', array_sum($oAnalytics->getPageviews()));
 			    
 			    $dl_results->appendChild($dt_pageviews);
 			    $dl_results->appendChild($dd_pageviews);
 			    
-			    
 			    //Total Visits
-			    $dt_visits = new XMLElement('dt', 'Total Visits');
+			    $dt_visits = new XMLElement('dt', 'Visits:');
 			    $dd_visits = new XMLElement('dd', array_sum($oAnalytics->getVisitors()));
 			    
 			    $dl_results->appendChild($dt_visits);
 			    $dl_results->appendChild($dd_visits);
 			    
-			    $wrapper->appendChild($dl_results);
+			    //Pages/Visit
+			    $pages_visits = $oAnalytics->getData(
+			     	array('metrics'=> urlencode('ga:pageviewsPerVisit'))
+			    );
+		     	$dt_pages_visits = new XMLElement('dt', 'Pages/Visit:');
+		     	$dd_pages_visits = new XMLElement('dd',  round(array_sum($pages_visits),2));
+		     	$dl_results->appendChild($dt_pages_visits);
+		     	$dl_results->appendChild($dd_pages_visits);
 			    
-			    $graph = extension_dashboard_analytics::buildChart($oAnalytics);
+			    $bounce_rate = $oAnalytics->getData(
+			    	array('metrics'=> urlencode('ga:visitBounceRate'))
+			    );
+			    $dt_bounce_rate = new XMLElement('dt', 'Bounce Rate:');
+			    $dd_bounce_rate = new XMLElement('dd', round(array_sum($bounce_rate),2).'%');
+			    $dl_results->appendChild($dt_bounce_rate );
+			    $dl_results->appendChild($dd_bounce_rate);
 			    
-  				$wrapper->appendChild($graph);
+			    //% New Visits
+			    $new_visits = $oAnalytics->getData(
+			    	array('metrics'=> urlencode('ga:percentNewVisits'))
+			    );
+			  	$dt_new_visits = new XMLElement('dt', '% New Visits:');
+			  	$dd_new_visits = new XMLElement('dd',  round(array_sum($new_visits),2).'%');
+			  	$dl_results->appendChild($dt_new_visits);
+			  	$dl_results->appendChild($dd_new_visits);
+			  	
+			  	
+			  	//Avg Time on Site
+			  	$average_time = $oAnalytics->getData(
+			  		array('metrics'=> urlencode('ga:avgTimeOnSite'))
+			  	);
+		  		$dt_average_time = new XMLElement('dt', 'Avg. Time on Site:');
+		  		$dd_average_time = new XMLElement('dd',  extension_dashboard_analytics::sec2hms(round(array_sum($average_time),0)));
+		  		$dl_results->appendChild($dt_average_time);
+		  		$dl_results->appendChild($dd_average_time);
+			  	
+
+			    //Search Terms
+			    $terms_head = new XMLElement('h4', 'Top Keywords:');
+			    $terms = new XMLElement('ol');
+			    $keywords = array_keys($oAnalytics->getSearchWords());
+
+			    $count = 0;
+			    foreach($keywords as $keyword) {	
+			    	$item = new XMLElement('li', $keyword);
+			    	$terms->appendChild($item);
+			    	$count++;
+			    	if ($count == 10) break;
+			    }
+			    
+			   			    
+			    $info->appendChild($info_header);
+			    $info->appendChild($dl_results);
+			    $info->appendChild($terms_head);
+			    $info->appendChild($terms);
+			    $wrapper->appendChild($info);
+			    
+			   
 			    return $wrapper;
 
 			    
 			} catch (Exception $e) { 
-			    echo 'Caught exception: ' . $e->getMessage(); 
+			   
+			   
+			   $info = new XMLElement('div');
+			   $info->setAttribute('class', 'info');
+			   $info_header = new XMLElement('h4', 'No data found. Check your account details.');
+			   $info->appendChild($info_header);
+			   return $info;
+
+			   
 			} 
 				
 		}
@@ -192,10 +259,9 @@
 			$ytick = ceil((max($page_views))/6);
 			
 			// Chart settings
-			// Chart settings
 			$traffic = new GoogleChart;
 			$traffic->type='lc';
-			$traffic->SetImageSize(550,300);
+			$traffic->SetImageSize(550,330);
 			$traffic->SetChartMargins(40,40,40,40);
 			$traffic->SetEncode('simple');
 			$traffic->AddData($visits);
@@ -206,10 +272,17 @@
 			
 			$traffic->AddLineStyle(3);
 			$traffic->AddLineStyle(3);
+
 			
 			$traffic->AddFillArea('B','FF99007F',0);
 			$traffic->AddFillArea('b','E6F2FA7F',0,1);
+			
+			$traffic->AddShapeMarker('o','FFFFFF',0,-1,9);
+			$traffic->AddShapeMarker('o','FF9900',0,-1,7);
+			$traffic->AddShapeMarker('o','FFFFFF',1,-1,9);
+			$traffic->AddShapeMarker('o','0077CC',1,-1,7);
 
+			
 			$traffic->AddAxis('y,x');
 			$traffic->AddAxisRange(0,round($ymax,-3),round($ytick, -3));
 			$traffic->AddAxisLabel(extension_dashboard_analytics::formatDates(array($d0,$d10,$d20,$d30)),1);
@@ -220,12 +293,15 @@
 			$traffic->SetTitle('Visits/Page Views of Last 30 Days');
 			$traffic->AddLegend('visits');
 			$traffic->AddLegend('page views');
+			$traffic->SetLegendPosition('b');
+			
 			
 
 			// Generate chart URL
 	
 			
 			$graph = new XMLElement('div', $traffic->GetImg());
+			$graph->setAttribute('class', 'graph');
 			return $graph;
 		
 		}
@@ -254,6 +330,45 @@
 			$page = $context['parent']->Page;
 			$page->addStylesheetToHead(URL . '/extensions/dashboard_analytics/assets/dashboard.analytics.index.css', 'screen', 1000);
 		}
+		
+		
+		
+		public function sec2hms ($sec, $padHours = false) 
+		  {
+		
+		    // start with a blank string
+		    $hms = "";
+		    
+		    // do the hours first: there are 3600 seconds in an hour, so if we divide
+		    // the total number of seconds by 3600 and throw away the remainder, we're
+		    // left with the number of hours in those seconds
+		    $hours = intval(intval($sec) / 3600); 
+		
+		    // add hours to $hms (with a leading 0 if asked for)
+		    $hms .= ($padHours) 
+		          ? str_pad($hours, 2, "0", STR_PAD_LEFT). ":"
+		          : $hours. ":";
+		    
+		    // dividing the total seconds by 60 will give us the number of minutes
+		    // in total, but we're interested in *minutes past the hour* and to get
+		    // this, we have to divide by 60 again and then use the remainder
+		    $minutes = intval(($sec / 60) % 60); 
+		
+		    // add minutes to $hms (with a leading 0 if needed)
+		    $hms .= str_pad($minutes, 2, "0", STR_PAD_LEFT). ":";
+		
+		    // seconds past the minute are found by dividing the total number of seconds
+		    // by 60 and using the remainder
+		    $seconds = intval($sec % 60); 
+		
+		    // add seconds to $hms (with a leading 0 if needed)
+		    $hms .= str_pad($seconds, 2, "0", STR_PAD_LEFT);
+		
+		    // done!
+		    return $hms;
+		    
+		  }
+		
 
 	}	
 ?>

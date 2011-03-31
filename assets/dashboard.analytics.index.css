@@ -1,22 +1,49 @@
 /* PANEL: Google Analytics */
 
-.google_analytics h4 {
+.google_analytics {
+	
+	border: 1px solid #CCCCCC;
+	background: #fff;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.google_analytics .info {
+	
+	float: left;
+	padding:10px;
+}
+
+.google_analytics .info h4 {
 	margin: 0 0 5px 0;
 }
 
-.google_analytics dl {
+.google_analytics .info dl {
 	margin: 0 0 10px 0;
 	overflow: hidden;
 }
 
-.google_analytics  dt {
+.google_analytics .info dt {
 	float: left;
 	clear: left;
-	width: 25%;
+	width: 60%;
 }
 
-.google_analytics  dd {
+.google_analytics .info dd {
 	float: left;
-	width: 70%;
+	width: 40%;
 }
 
+
+
+.google_analytics .graph {
+	
+	float: left;
+	margin-right: 5px;
+	
+}
+
+.google_analytics .graph img {
+	
+	display: block;
+}
