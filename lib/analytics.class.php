@@ -356,6 +356,8 @@
             } else {
                 curl_setopt($rRequest, CURLOPT_HTTPHEADER, $aHeader);
             }
+
+			curl_setopt($rRequest, CURLOPT_SSL_VERIFYPEER, FALSE);
             
             $sOutput = curl_exec($rRequest);
             if ($sOutput === false){
