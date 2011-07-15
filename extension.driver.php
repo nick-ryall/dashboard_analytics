@@ -103,13 +103,10 @@
 			    //$oAnalytics->setMonth(date('n'), date('Y'));
 			    $oAnalytics->setDateRange($last_month, $today);
 			    
-			    
 			    $wrapper = new XMLElement('div');
-			    $wrapper->setAttribute('class', 'google_analytics');
 			    
 			    $graph = extension_dashboard_analytics::buildChart($oAnalytics);
 				$wrapper->appendChild($graph);
-				
 			    
 			    $info = new XMLElement('div');
 			    $info->setAttribute('class', 'info');
@@ -117,14 +114,14 @@
 			    $dl_results = new XMLElement('dl');
 			    
 			    //Total Pageviews
-			    $dt_pageviews = new XMLElement('dt', 'Pageviews:');
+			    $dt_pageviews = new XMLElement('dt', 'Pageviews');
 			    $dd_pageviews = new XMLElement('dd', array_sum($oAnalytics->getPageviews()));
 			    
 			    $dl_results->appendChild($dt_pageviews);
 			    $dl_results->appendChild($dd_pageviews);
 			    
 			    //Total Visits
-			    $dt_visits = new XMLElement('dt', 'Visits:');
+			    $dt_visits = new XMLElement('dt', 'Visits');
 			    $dd_visits = new XMLElement('dd', array_sum($oAnalytics->getVisitors()));
 			    
 			    $dl_results->appendChild($dt_visits);
@@ -134,7 +131,7 @@
 			    $pages_visits = $oAnalytics->getData(
 			     	array('metrics'=> urlencode('ga:pageviewsPerVisit'))
 			    );
-		     	$dt_pages_visits = new XMLElement('dt', 'Pages/Visit:');
+		     	$dt_pages_visits = new XMLElement('dt', 'Pages per Visit');
 		     	$dd_pages_visits = new XMLElement('dd',  round(array_sum($pages_visits),2));
 		     	$dl_results->appendChild($dt_pages_visits);
 		     	$dl_results->appendChild($dd_pages_visits);
@@ -142,7 +139,7 @@
 			    $bounce_rate = $oAnalytics->getData(
 			    	array('metrics'=> urlencode('ga:visitBounceRate'))
 			    );
-			    $dt_bounce_rate = new XMLElement('dt', 'Bounce Rate:');
+			    $dt_bounce_rate = new XMLElement('dt', 'Bounce Rate');
 			    $dd_bounce_rate = new XMLElement('dd', round(array_sum($bounce_rate),2).'%');
 			    $dl_results->appendChild($dt_bounce_rate );
 			    $dl_results->appendChild($dd_bounce_rate);
@@ -151,7 +148,7 @@
 			    $new_visits = $oAnalytics->getData(
 			    	array('metrics'=> urlencode('ga:percentNewVisits'))
 			    );
-			  	$dt_new_visits = new XMLElement('dt', '% New Visits:');
+			  	$dt_new_visits = new XMLElement('dt', '% New Visits');
 			  	$dd_new_visits = new XMLElement('dd',  round(array_sum($new_visits),2).'%');
 			  	$dl_results->appendChild($dt_new_visits);
 			  	$dl_results->appendChild($dd_new_visits);
@@ -161,14 +158,17 @@
 			  	$average_time = $oAnalytics->getData(
 			  		array('metrics'=> urlencode('ga:avgTimeOnSite'))
 			  	);
-		  		$dt_average_time = new XMLElement('dt', 'Avg. Time on Site:');
+		  		$dt_average_time = new XMLElement('dt', 'Avg. Time on Site');
 		  		$dd_average_time = new XMLElement('dd',  extension_dashboard_analytics::sec2hms(round(array_sum($average_time),0)));
 		  		$dl_results->appendChild($dt_average_time);
 		  		$dl_results->appendChild($dd_average_time);
 			  	
 
+				$search_terms = new XMLElement('div');
+			    $search_terms->setAttribute('class', 'terms');
+			    
 			    //Search Terms
-			    $terms_head = new XMLElement('h4', 'Top Keywords:');
+			    $terms_head = new XMLElement('h4', 'Top Keywords');
 			    $terms = new XMLElement('ol');
 			    $keywords = array_keys($oAnalytics->getSearchWords());
 
@@ -179,25 +179,26 @@
 			    	$count++;
 			    	if ($count == 10) break;
 			    }
-			    
-			   			    
+			
 			    $info->appendChild($info_header);
 			    $info->appendChild($dl_results);
-			    $info->appendChild($terms_head);
-			    $info->appendChild($terms);
+			
+			    $search_terms->appendChild($terms_head);
+			    $search_terms->appendChild($terms);
+			
 			    $wrapper->appendChild($info);
-			    
-			   
+			$wrapper->appendChild($search_terms);
+
 			    return $wrapper;
 
 			    
 			} catch (Exception $e) { 
 			   
-			   
 			   $info = new XMLElement('div');
 			   $info->setAttribute('class', 'info');
 			   $info_header = new XMLElement('h4', 'No data found. Check your account details.');
 			   $info->appendChild($info_header);
+			   $info_header->appendChild(new XMLElement('p', '<code>'.(string)$e->getMessage().'</code>'));
 			   return $info;
 
 			   
@@ -222,7 +223,6 @@
 			 foreach($visit_report as $dimensions => $metric) {
 			 	array_push($visits, $metric);
 			 }
-
 			 
 			 // Generating visit arrays for the date range.
 			  $views_report = $oAnalytics->getData(
@@ -261,8 +261,8 @@
 			// Chart settings
 			$traffic = new GoogleChart;
 			$traffic->type='lc';
-			$traffic->SetImageSize(550,330);
-			$traffic->SetChartMargins(40,40,40,40);
+			$traffic->SetImageSize(700,200);
+			$traffic->SetChartMargins(20,20,20,20);
 			$traffic->SetEncode('simple');
 			$traffic->AddData($visits);
 			$traffic->AddData($page_views);
@@ -290,7 +290,7 @@
 			$traffic->SetGrid(round(100/30,2),round(100/6,2),1,3);
 			
 			
-			$traffic->SetTitle('Visits/Page Views of Last 30 Days');
+			$traffic->SetTitle('Visits and Page Views of last 30 days');
 			$traffic->AddLegend('visits');
 			$traffic->AddLegend('page views');
 			$traffic->SetLegendPosition('b');
