@@ -1,6 +1,6 @@
 /* PANEL: Google Analytics */
 
-.google_analytics {
+#dashboard .google_analytics {
 	
 	border: 1px solid #CCCCCC;
 	background: #fff;
@@ -8,42 +8,41 @@
 	overflow: hidden;
 }
 
-.google_analytics .info {
+#dashboard .google_analytics .info {
 	
 	float: left;
 	padding:10px;
+	width: 220px;
 }
 
-.google_analytics .info h4 {
+#dashboard .google_analytics .info h4 {
 	margin: 0 0 5px 0;
 }
 
-.google_analytics .info dl {
+#dashboard .google_analytics .info dl {
 	margin: 0 0 10px 0;
 	overflow: hidden;
 }
 
-.google_analytics .info dt {
+#dashboard .google_analytics .info dt {
 	float: left;
 	clear: left;
-	width: 60%;
+	width: 50%;
+	margin-bottom: 5px;
 }
 
-.google_analytics .info dd {
+#dashboard .google_analytics .info dd {
 	float: left;
 	width: 40%;
+	margin-bottom: 5px;
 }
 
-
-
-.google_analytics .graph {
-	
+#dashboard .google_analytics .graph {
 	float: left;
 	margin-right: 5px;
 	
 }
 
-.google_analytics .graph img {
-	
+#dashboard .google_analytics .graph img {
 	display: block;
 }

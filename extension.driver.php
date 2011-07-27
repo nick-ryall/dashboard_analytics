@@ -81,7 +81,7 @@
 		public function display_results($email, $password, $profile_id) {
 		
 			
-			require 'lib/analytics.class.php';
+			require_once 'lib/analytics.class.php';
 			
 			// session_start for caching
 			session_start();
@@ -208,7 +208,7 @@
 		
 		public function buildChart($oAnalytics) {
 		
-			require 'lib/google_chart.php'; // By Andrey Savchenko (Rarst), http://www.rarst.net/script/google-chart/
+			require_once 'lib/google_chart.php'; // By Andrey Savchenko (Rarst), http://www.rarst.net/script/google-chart/
 			
 			
 			// Generating visit arrays for the date range.
