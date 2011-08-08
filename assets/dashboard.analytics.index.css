@@ -11,7 +11,26 @@
 }
 
 .analytics_panel .info,
-.analytics_panel .terms {
+.analytics_panel .terms,
+.google_analytics .graph {
 	float: left;
 	width: 50%;
+}
+
+.analytics_panel .info dt {
+	float: left;
+	clear: left;
+	width: 50%;
+}
+.analytics_panel .info dd {
+	float: left;
+	width: 40%;
+}
+.analytics_panel .graph {
+	float: left;
+	margin-right: 5px;
+	
+}
+.analytics_panel.graph img {
+	display: block;
 }
