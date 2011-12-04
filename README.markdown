@@ -16,8 +16,14 @@ To provide a Dashboard summary screen for users. Dashboard "panels" can contain 
 
 ## Usage
 
-You need to supply your Google Analytics user account `Email` and `Password`. The `Profile ID` is the ID of the website profile. This can be found in the URL of your site report in Analytics, for example:
+You need to supply your Google Analytics user account `Email` and `Password`. The `Profile ID` is the ID of the website profile.
+
+For the OLD VERSION analytic page this can be found in the URL of your site report in Analytics, for example:
 
 	https://www.google.com/analytics/reporting/?id=123456789
+
+For the NEW VERSION analytic page it is the number at the end of the URL starting with p
+
+	https://www.google.com/analytics/web/#home/a11345062w43527078pXXXXXXXX/ 
 
 Please note that your login details will be stored as plain text.
