@@ -243,9 +243,11 @@
 			
 			
 			// Get the keys for max. values of page views and visits
-			function max_key($array) {
-			 foreach ($array as $key => $val) {
-			 if ($val == max($array)) return $key;
+			if( !function_exists('max_key') ){
+			 function max_key($array) {
+			  foreach ($array as $key => $val) {
+			   if ($val == max($array)) return $key;
+			  }
 			 }
 			}
 			$array = $page_views;
